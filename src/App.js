@@ -23,18 +23,27 @@ function GithubUser({ name, location, id, avatar }) {
 function App() {
   // Declare a state variable 'data' and a function 'setData' to update it, initialized to null
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   // Use the useEffect hook to fetch data when the component mounts
   useEffect(() => {
+    setLoading(true);
+
     // Fetch data from the GitHub API for the user 'ashimnepal'
     fetch(`https://api.github.com/users/ashimnepal`)
       .then((response) => response.json()) // Parse the response as JSON
-      .then(setData); // Update the state with the fetched data
+      .then(setData)
+      .then(()=> setLoading(false))
+      .catch(setError); // Update the state with the fetched data
   }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   // If data is fetched and available, render the GithubUser component with the fetched data
-  if (data) {
-    return (
+  if (loading) return <h1>Loading.......</h1>
+  if (error) return <pre>{JSON.stringify(error)}</pre>;
+  if(!data) return null;
+      return (
       <GithubUser 
         name={data.login} // Pass the login name as a prop
         location={data.location} // Pass the location as a prop
@@ -44,9 +53,7 @@ function App() {
     );
   }
 
-  // If data is not yet available, render a loading message
-  return <h1>Loading...</h1>;
-}
+
 
 // Export the App component as the default export
 export default App;
