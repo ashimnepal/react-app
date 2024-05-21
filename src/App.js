@@ -31,7 +31,7 @@ function App() {
   useEffect(() => {
     setLoading(true);
 
-    // Fetch data from the GitHub API for the user 'ashimnepal'
+    // Fetch data from the GitHub API for the user 'ashimnepal'//this is added for rebasing
     fetch(`https://api.github.com/users/ashimnepal`)
       .then((response) => response.json()) // Parse the response as JSON
       .then(setData)
