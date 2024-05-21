@@ -4,17 +4,33 @@ import "./App.css";
 // Import the useState and useEffect hooks from React
 import { useState, useEffect } from "react";
 
+//making constant for the long url for the query
+const query = `query{
+  allLifts{
+    name
+    elevationGain
+    status
+  }
+  }`;
+
+const opts = 
+{
+  method: "POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({query})
+};
+
+
+
 // Define a functional component to display GitHub user information
-function GithubUser({ name, location, id, avatar }) {
+function Lift({ name, elevationGain, status }) {
   return (
     <div>
       {/* Display the user's login name */}
       <h1>The {name}</h1>
-      {/* Display the user's location */}
-      <h1>The <span>location but the jinja is given for location in code {location}</span> is not showing cause the location is empty in API data.</h1>
-      {/* Display the user's ID */}
-      <h1>The {id}</h1>
-      <img src={avatar} height={150} alt={name}/>
+      
+      <h5>{elevationGain} and the {status}</h5>
+      
     </div>
   );
 }
@@ -32,7 +48,7 @@ function App() {
     setLoading(true);
 
     // Fetch data from the GitHub API for the user 'ashimnepal'//this is added for rebasing
-    fetch(`https://api.github.com/users/ashimnepal`)
+    fetch(`https://snowtooth.moonhighway.com/`, opts)
       .then((response) => response.json()) // Parse the response as JSON
       .then(setData)
       .then(()=> setLoading(false))
@@ -44,12 +60,15 @@ function App() {
   if (error) return <pre>{JSON.stringify(error)}</pre>;
   if(!data) return null;
       return (
-      <GithubUser 
-        name={data.login} // Pass the login name as a prop
-        location={data.location} // Pass the location as a prop
-        id={data.id} // Pass the user ID as a prop
-        avatar={data.avatar_url} // Pass the user ID as a prop
-      />
+     <div>
+      {data.data.allLifts.map((lift)=>
+      (
+        <Lift name={lift.name}
+        elevationGain={lift.elevationGain}
+        status={lift.status} />
+
+      ))}
+     </div>
     );
   }
 
